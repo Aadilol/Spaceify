@@ -1,0 +1,38 @@
+{
+  "name": "spotify-listening-map",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": "^22.13.0 || >=24.0.0"
+  },
+  "scripts": {
+    "dev": "vite --host 127.0.0.1",
+    "build": "tsc && vite build",
+    "build:pages": "tsc && vite build --mode github-pages && node dev/check-pages-build.js",
+    "preview": "vite preview --host 127.0.0.1",
+    "prepare:owner-chart": "node --experimental-strip-types dev/prepare-owner-chart.ts",
+    "lint": "eslint .",
+    "typecheck": "tsc",
+    "test": "node --experimental-strip-types --test tests/graph.test.ts tests/history.test.ts tests/public-chart.test.ts",
+    "test:ui": "playwright test"
+  },
+  "dependencies": {
+    "lucide-react": "^0.468.0",
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0"
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "@playwright/test": "^1.58.0",
+    "@types/node": "^24.0.0",
+    "@types/react": "^19.2.0",
+    "@types/react-dom": "^19.2.0",
+    "@vitejs/plugin-react": "^5.1.0",
+    "eslint": "^10.15.0",
+    "eslint-plugin-react-hooks": "^7.0.0",
+    "typescript": "~5.9.3",
+    "typescript-eslint": "^8.50.0",
+    "vite": "^7.3.1"
+  }
+}
