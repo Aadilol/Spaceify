@@ -24,7 +24,7 @@ import { useStarAudio } from './useStarAudio.ts'
 import { useCatalogArtwork } from './useCatalogArtwork.ts'
 
 export default function App() {
-  const demo = new URLSearchParams(window.location.search).has('demo')
+  const demo = import.meta.env.MODE !== 'github-pages' && new URLSearchParams(window.location.search).has('demo')
   const preferPrivate = import.meta.env.DEV && new URLSearchParams(window.location.search).has('private')
   const [defaultChart, setDefaultChart] = useState<DefaultChart | null>(null)
   const [showDefault, setShowDefault] = useState(true)
@@ -103,7 +103,6 @@ export default function App() {
             <h2>{checkingDefault ? 'Loading owner chart' : 'Open your listening map'}</h2>
             {defaultError && <p role="alert">The default chart could not be read. You can select the audio JSON files directly.</p>}
             {!checkingDefault && <button type="button" className="plain-button" onClick={openHistory}>Load history files</button>}
-            {!checkingDefault && <a href="?demo" className="plain-button external-link">Open demo</a>}
           </div>
         </main>
       )}

@@ -24,6 +24,7 @@ async function waitForDraw(canvas: Locator, frames = 3) {
 }
 
 async function openMap(page: Page, reducedMotion: 'reduce' | 'no-preference' = 'reduce') {
+  test.skip(Boolean(process.env.LISTENING_MAP_TEST_PAGES), 'The synthetic chart is for local testing.')
   await page.emulateMedia({ reducedMotion })
   await page.goto('/?demo')
   await expect(canvasFor(page)).toBeVisible()
@@ -367,7 +368,8 @@ test('a delayed or failed chart bundle displays loading and error states and rec
   let release!: () => void
   const paused = new Promise<void>((resolve) => { release = resolve })
   await page.route(chunk, async (route) => { await paused; await route.abort() })
-  await page.goto('/?demo', { waitUntil: 'domcontentloaded' })
+  await page.route('**/owner-chart.json', (route) => route.fulfill({ json: ownerFixture }))
+  await page.goto('/', { waitUntil: 'domcontentloaded' })
   try {
     await expect(page.getByRole('status').getByRole('heading', { name: 'Loading listening map' })).toBeVisible()
   } finally {
@@ -673,13 +675,14 @@ test('a malformed public pack leaves the visitor import available', async ({ pag
   await expect(page.getByRole('button', { name: 'Load history files' })).toBeVisible()
 })
 
-test('the standalone landing page links to the synthetic demo', async ({ page }) => {
-  await page.goto('/')
-  if (process.env.LISTENING_MAP_TEST_PAGES) {
-    await expect(page.locator('meta[http-equiv="Content-Security-Policy"]')).toHaveAttribute('content', /script-src 'self'/)
-  }
-  await page.getByRole('link', { name: 'Open demo' }).click()
-  await expect(canvasFor(page)).toBeVisible()
+test('the hosted map opens the owner chart even with the old demo URL', async ({ page }) => {
+  test.skip(!process.env.LISTENING_MAP_TEST_PAGES, 'The hosted build excludes the demo entry point.')
+  await page.route('**/owner-chart.json', (route) => route.fulfill({ json: ownerFixture }))
+  await page.goto('/?demo')
+  await expect(page.locator('meta[http-equiv="Content-Security-Policy"]')).toHaveAttribute('content', /script-src 'self'/)
+  await expect(page.getByText('Owner chart · UTC')).toBeVisible()
+  await page.getByRole('button', { name: 'History', exact: true }).click()
+  await expect(page.getByLabel('Audio history files')).toBeVisible()
 })
 
 test('artist focus exposes cached ListenBrainz links and suggestions without contacting their API', async ({ page }) => {

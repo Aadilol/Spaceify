@@ -45,6 +45,6 @@ Private listening history, optional Spotify tokens, personally identifying expor
 - The Pages workflow builds from the default branch on manual dispatch. The build job can read the repository. Only the deployment job can write to Pages and request an identity token.
 - The Pages build excludes the public input directory. A post-build check limits the artifact to the entry page and generated assets. The workflow also rejects files tracked against the repository ignore rules.
 - The Pages HTML declares a content security policy that allows same-origin scripts, blob-based import workers, approved artwork hosts, and the Spotify player. Inline styles support the dynamic controls. The meta policy does not enforce framing protection. A host that supports custom headers can supply `frame-ancestors` and `X-Content-Type-Options` at the HTTP layer.
-- The standalone Pages build offers a synthetic demo and browser-local import. The local development API and private owner review data are outside the published artifact.
+- The standalone Pages build offers browser-local import. The Vercel owner build stages a schema-validated, explicitly approved public candidate. The local development API and private owner review data are outside both hosted artifacts.
 
 References: https://cheatsheetseries.owasp.org/cheatsheets/File_Upload_Cheat_Sheet.html and https://wstg.owasp.org/

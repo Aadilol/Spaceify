@@ -23,7 +23,14 @@ Switch between **Year** and **Through year** above the timeline. Each mode remem
 2. In **Settings → Pages**, set **Source** to **GitHub Actions**.
 3. Open **Actions → Deploy Listening Map to GitHub Pages** and run it from the default branch.
 
-The workflow builds the static site with `npm run build:pages` and publishes the generated HTML and assets. Visitors can open the synthetic demo or import their JSON files locally. Live Spotify lookup needs a backend, so the Pages build hides that option. The workflow does not publish the owner draft. An optional owner chart and its artwork require a separate review before any public deployment. [GitHub Pages publishing settings](https://docs.github.com/en/pages/getting-started-with-github-pages/configuring-a-publishing-source-for-your-github-pages-site)
+The workflow builds the static site with `npm run build:pages` and publishes the generated HTML and assets. This build supports browser-local history import and can open a separately supplied public owner chart. Live Spotify lookup and the synthetic demo are unavailable in hosted builds. [GitHub Pages publishing settings](https://docs.github.com/en/pages/getting-started-with-github-pages/configuring-a-publishing-source-for-your-github-pages-site)
+
+### Hosting the owner map on Vercel
+
+1. Run `npm run prepare:public-chart` locally. Review `.owner-review/public-candidate.json` before sharing it. It contains your artist and album names, calendar years, approximate listening ranges, ranks, suggestions and reviewed catalog metadata. It omits played-track titles and local-only artist grids. Verified catalog tracklists and eligible remote artwork remain.
+2. If you approve that file for public viewing, upload just the candidate to a public Vercel Blob store. Anyone with that URL can read it. Keep the draft and your streaming export local. [Vercel public Blob storage](https://vercel.com/docs/vercel-blob/public-storage)
+3. In Vercel, set `LISTENING_MAP_APPROVED_CHART_URL` to the candidate's public Blob URL. Use `npm run build:owner` as the build command if the project has an existing override, and `dist` as the output directory. The build validates the candidate and serves it from the site as `owner-chart.json`.
+4. Deploy the updated source. Visitors land on your owner map and can use **History** to load their own JSON files. **Clear imported data** returns them to your chart.
 
 ### Public owner default
 
@@ -72,7 +79,7 @@ Select a star to reveal tracks as satellites. Its name stays blue while linked s
 
 Hover or selection keeps the star and its direct links bright. Telescope zoom reveals fainter stars and secondary connections. Changing years briefly draws each visible star’s previous chart positions. A comet tail marks a return with at least 120 play events after two or more complete years without listening to that entry. Twinkle reflects recency relative to the newest playback in the import.
 
-Use **Find a star** to search names and tracks. Drag the top **Volume** knob to adjust local control sounds in 25% steps. Up or right increases the volume. Down or left decreases it. Click a half of the knob or use the arrow keys to move one step. Add `?demo` to the URL to open the synthetic chart with fictional tags, discoveries, and synthesized previews.
+Use **Find a star** to search names and tracks. Drag the top **Volume** knob to adjust local control sounds in 25% steps. Up or right increases the volume. Down or left decreases it. Click a half of the knob or use the arrow keys to move one step. For local development and testing, add `?demo` to open the synthetic chart.
 
 Drag a node to pin it or drag the background to pan. Scroll, pinch, or focus the chart and press **+** or **−** to zoom in fixed steps. Zoom steps play a mechanical click when volume is above zero. Press **0** on the chart to restore positions and zoom.
 

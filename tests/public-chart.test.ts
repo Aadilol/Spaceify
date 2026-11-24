@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict'
 import test from 'node:test'
 import { buildPublicChart } from '../dev/build-public-chart.ts'
+import { fetchApprovedChart, publicReleaseChart } from '../dev/release-owner-chart.ts'
 import { addSpotifyCovers, fetchSpotifyAlbumCredits, matchSpotifyCover } from '../dev/spotify-cover.ts'
 import { ownerArtworkOrder } from '../dev/artwork-priority.ts'
 import { artistGridArtwork, fetchListenBrainzGrid } from '../dev/listenbrainz-artwork.ts'
@@ -17,6 +18,24 @@ import { formatPublicBand } from '../src/graph/model.ts'
 import { constellationNodes, genreGroup, genreGroupLabel, layoutGraph, supportsGenre } from '../src/graph/layout.ts'
 import { publicArchive } from '../src/graph/public-archive.ts'
 import { albumSuggestionMbid, artistSimilarityFixture, ownerFixture, suggestionMbid } from './public-fixture.ts'
+
+test('hosted builds require a reviewed public chart and reject private fields or arbitrary download hosts', async () => {
+  const draft = { ...ownerFixture, catalog: ownerFixture.catalog.map((entry) => entry.artist
+    ? { ...entry, playedTitles: ['Private recording'] } : entry) }
+  const candidate = publicReleaseChart(draft)
+  assert.ok(candidate.catalog.every((entry) => !entry.playedTitles))
+  assert.ok(draft.catalog.some((entry) => entry.playedTitles))
+  const url = 'https://example.public.blob.vercel-storage.com/reviewed-chart.json'
+  const fetchCandidate: typeof fetch = async (address, options) => {
+    assert.equal(String(address), url)
+    assert.equal(options?.redirect, 'error')
+    return Response.json(candidate)
+  }
+  assert.deepEqual(await fetchApprovedChart(url, fetchCandidate), candidate)
+  await assert.rejects(fetchApprovedChart('http://127.0.0.1/owner-chart.json', fetchCandidate), /public Vercel Blob/)
+  await assert.rejects(fetchApprovedChart(url, async () => Response.json(draft)), /prepared public candidate/)
+  await assert.rejects(fetchApprovedChart(url, async () => Response.json({ ...candidate, playEvents: [] })), /Invalid owner chart/)
+})
 
 test('public projection drops tracks, dates, exact counts, and private identifiers', async () => {
   const row = { ts: '2024-10-12T01:02:03Z', ms_played: 1_890_000, ip_addr: '192.0.2.33', platform: 'example-device',

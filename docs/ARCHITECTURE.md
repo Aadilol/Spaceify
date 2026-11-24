@@ -32,7 +32,7 @@ A Node preparation command projects all annual artist and album entries and cumu
 
 Explore artwork eligibility is computed from exact lifetime listening time. The owner pack stores only the eligibility marker so clients do not need exact durations. An older pack requires a rebuild from the export to display images in Explore. Focus can use its existing artwork immediately.
 
-A same-origin runtime file supplies the approved owner default. The Vite production build contains the loader and a synthetic fixture. A loopback-only preview of the ignored review directory takes precedence in development. The map opens without a production database or catalog lookup. Image view can load prepared artwork from approved hosts.
+A same-origin runtime file supplies the approved owner default. The hosted build opens that chart and has no demo entry point. The Vercel build stages a validated, explicitly supplied public candidate from Vercel Blob. A loopback-only preview of the ignored review directory takes precedence in development. The map opens without a production database or catalog lookup. Image view can load prepared artwork from approved hosts.
 
 The preparation command fetches ListenBrainz artist grids independently of the interactive map. It reads only image references from the provider SVG, fetches allowlisted thumbnail formats, and constructs a self-contained local SVG. The browser loads the resulting asset from the site alongside the approved owner pack.
 

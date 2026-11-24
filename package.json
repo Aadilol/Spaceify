@@ -10,6 +10,8 @@
     "dev": "vite --host 127.0.0.1",
     "build": "tsc && vite build",
     "build:pages": "tsc && vite build --mode github-pages && node dev/check-pages-build.js",
+    "build:owner": "npm run build:pages && node --experimental-strip-types dev/release-owner-chart.ts --publish",
+    "prepare:public-chart": "node --experimental-strip-types dev/release-owner-chart.ts --prepare",
     "preview": "vite preview --host 127.0.0.1",
     "prepare:owner-chart": "node --experimental-strip-types dev/prepare-owner-chart.ts",
     "lint": "eslint .",
