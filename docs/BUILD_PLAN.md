@@ -37,5 +37,4 @@
 - [ ] Verify production browser behavior and exported assets.
 - [ ] If hosted, conduct threat model update and deployment-specific controls.
 
-## Suggested first Codex command
-"Read AGENTS.md and docs/BUILD_PLAN.md. Use synthetic data for Phase 0 and follow the Starfield design system. Run available checks and show me what changed."
+
